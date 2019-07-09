@@ -1,2 +1,2 @@
-# freshworks-widget
+# wp-freshworks-widget
 WordPress Plugin for Feedback Widget
