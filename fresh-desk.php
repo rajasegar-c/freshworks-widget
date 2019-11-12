@@ -52,6 +52,7 @@ if(!class_exists('Fresh_Desk'))
 			if(isset($this->freshdesk_options['freshdesk_enable_tickets']) && $this->freshdesk_options['freshdesk_enable_tickets'] == 'checked') {
 				// This is the comment post hook whichj executes after the comment creation
 				add_action( 'comment_post', [ $this, 'fd_action_callback' ], 10, 2 );
+				add_action( 'wp_ajax_fd_ticket_action', [ $this, 'fd_action_ajax_callback' ]);
 			}
 		}
 
@@ -601,6 +602,42 @@ if(!class_exists('Fresh_Desk'))
 					} // end of the $set_errors loop
 				}
 			}
+		}
+
+		/**
+		* Function Name: fd_action_callback
+		* Ajax Action handler. Freshdesk Ticket creation handled here.
+		* @return void
+		*/
+		public function fd_action_ajax_callback() {
+			$id = $_POST['commentId'];
+			$comment = get_comment($id);
+			$comment_link = get_comment_link( $comment, 'all' );
+			$email = $comment->comment_author_email;
+			$description = $comment->comment_content;
+			$description = $description . "<br/><br/><a href=" . htmlentities($comment_link) . ">Go to comment</a>";
+			$type = $comment->comment_type;
+			$comment_meta = $comment->comment_agent;
+			$comment_date = $comment->comment_date;
+			$comment_post = $comment->comment_post_ID;
+			$comment_author_name = $comment->comment_author;
+			$subject = "comment id :".$id;
+			$options = get_option( 'freshdesk_options' );
+
+			require_once( plugin_dir_path( __FILE__ ) . 'includes/fresh-desk-plugin-api.php' );
+			$fd_api_handle = new Fresh_Desk_Plugin_Api( $options['freshdesk_api_key'], $options['freshdesk_domain_url'] );
+			$result = $fd_api_handle->create_ticket( $email, $subject, $description );
+			$response = array(
+				'what'=>'helpdesk_ticket',
+				'action'=>'create',
+				'id'=>'1',
+				'data'=> $result
+			);
+			if ( $result != -1 ) {
+				$resp = add_comment_meta( $id, 'fd_ticket_id', $result, false );
+			}
+			$xmlResponse = new WP_Ajax_Response( $response );
+			$xmlResponse->send();
 		}
 	}
 }
