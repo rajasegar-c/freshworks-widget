@@ -38,8 +38,7 @@ if(!class_exists('Fresh_Desk'))
 			add_action( 'admin_menu', [ $this, 'freshdesk_plugin_menu' ]);
 			// This adds the comment action menu.
 			add_filter( 'comment_row_actions', [ $this, 'freshdesk_comment_action' ], 10, 2);
-			// This is the ajax action handler
-			add_action( 'wp_ajax_fd_ticket_action', [ $this, 'fd_action_callback' ]);
+
 			// This is used to redirect to Freshdesk on SSO.
 			add_filter( 'login_redirect', [ $this, 'fd_login_redirect' ], 10, 3 ); 
 			add_filter( 'login_message', [ $this, 'show_login_message' ]);
@@ -49,6 +48,11 @@ if(!class_exists('Fresh_Desk'))
 			//Get Freshdesk Options from DB
 			$this->freshdesk_options = (get_option( 'freshdesk_options' ) !== false) ? get_option( 'freshdesk_options' ) : [];
 			$this->freshdesk_feedback_options = (get_option( 'freshdesk_feedback_options' ) !== false) ? get_option( 'freshdesk_feedback_options' ) : [];
+
+			if(isset($this->freshdesk_options['freshdesk_enable_tickets']) && $this->freshdesk_options['freshdesk_enable_tickets'] == 'checked') {
+				// This is the comment post hook whichj executes after the comment creation
+				add_action( 'comment_post', [ $this, 'fd_action_callback' ], 10, 2 );
+			}
 		}
 
 		/**
@@ -145,20 +149,16 @@ if(!class_exists('Fresh_Desk'))
 		public function freshdesk_settings_init() {
 			register_setting( 'freshdesk_options_group', 'freshdesk_options', array($this, 'validate_freshdesk_settings' ));
 			add_settings_section( 'freshdesk_settings_section', '', '', 'freshdesk-menu-handle' );
-			//Domain url.
-			add_settings_field( 'freshdesk_domain_url', __('Helpdesk URL'), array($this, 'freshdesk_domain_callback') ,'freshdesk-menu-handle', 'freshdesk_settings_section' );
-			//Host url
-			add_settings_field( 'freshdesk_cname', __('Portal URLs'), array($this, 'freshdesk_cname_callback') ,'freshdesk-menu-handle', 'freshdesk_settings_section' );
-			
-			//Freshdesk Api Key.
-			add_settings_field( 'freshdesk_api_key', 'API Key', array($this, 'freshdesk_api_callback') , 'freshdesk-menu-handle', 'freshdesk_settings_section' );
-			
-			//Enable SSO
-			add_settings_field( 'freshdesk_enable_sso', '', array($this, 'freshdesk_enable_sso_callback') , 'freshdesk-menu-handle', 'freshdesk_settings_section' );
-			
+
 			//Enable/disable freshdesk widget code.
 			register_setting( 'freshdesk_options_group','freshdesk_feedback_options', array($this, 'validate_freshdesk_fb_settings'));
 			add_settings_field( 'freshdesk_enable_feedback', '', array($this, 'freshdesk_enable_fb_callback') , 'freshdesk-menu-handle', 'freshdesk_settings_section' );
+
+			//Enable SSO
+			add_settings_field( 'freshdesk_enable_sso', '', array($this, 'freshdesk_enable_sso_callback') , 'freshdesk-menu-handle', 'freshdesk_settings_section' );
+
+			//Convert WP Comments to Freshdesk Tickets
+			add_settings_field( 'freshdesk_convert_wp_comments_to_fd_tickets', '', array($this, 'freshdesk_convert_tickets_callback') , 'freshdesk-menu-handle', 'freshdesk_settings_section' );			
 		}
 
 		/**
@@ -198,11 +198,49 @@ if(!class_exists('Fresh_Desk'))
 		}
 
 		/**
+		* Function Name: freshdesk_convert_tickets_callback
+		* @return void
+		*/
+		public function freshdesk_convert_tickets_callback() {
+			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_tickets]" id="freshdesk_enable_tickets" '.(isset($this->freshdesk_options["freshdesk_enable_tickets"]) ? $this->freshdesk_options["freshdesk_enable_tickets"] : '').' /><span class="fd_ui_element fd-bold">Convert WP Comments to FreshDesk Tickets </span></label><div><div class="info-data fd_lmargin">Enabling this will let your users to convert wordpress comments to freshdesk tickets</div></li>';
+			//API Key
+			echo '<div id="freshdesk_tickets_options" style="display: none;padding-left:45px">';
+			$this->freshdesk_tickets_callback();
+
+			//HelpDesk URL
+			echo '<ul class="fd-content freshdesk_sso_settings">';
+			$this->freshdesk_helpdesk_url_callback();
+			echo '</ul>';
+			
+			echo '</div>';
+		}
+
+		/**
+		* Function Name: freshdesk_helpdesk_url_callback
+		* @return void
+		*/
+		public function freshdesk_helpdesk_url_callback() {
+			echo '<li><div class="info-title">'.__('Helpdesk URL').'</div>';
+			echo "<input class='fd-code' id='freshdesk_domain_url' name='freshdesk_options[freshdesk_domain_url]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_domain_url']}' />";
+			echo '<div class="info-data freshdesk_helpdesk_url">Eg: https://yourcompany.freshdesk.com</div></li></ul>';
+		}
+
+		/**
+		* Function Name: freshdesk_sso_callback
+		* @return void
+		*/
+		public function freshdesk_tickets_callback() {
+			echo "<div class='freshdesk_sso_settings'><div class='info-title'>".__("API Key")."</div><input class='fd_ui_element' id='freshdesk_api_key' name='freshdesk_options[freshdesk_api_key]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_api_key']}' />";
+			
+			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">'.__("Your Helpdesk's Apikey will be available under Agent profile settings.").'</div>';
+		}
+
+		/**
 		* Function Name: freshdesk_sso_callback
 		* @return void
 		*/
 		public function freshdesk_sso_callback() {
-			echo "<div class='freshdesk_sso_settings' style='display: none;' ><div class='info-title'>".__("SSO Shared Secret")."</div><input class='fd_ui_element' id='freshdesk_sso_key' name='freshdesk_options[freshdesk_sso_key]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_sso_key']}' />";
+			echo "<div class='freshdesk_sso_settings'><div class='info-title'>".__("SSO Shared Secret")."</div><input class='fd_ui_element' id='freshdesk_sso_key' name='freshdesk_options[freshdesk_sso_key]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_sso_key']}' />";
 			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">Enable SSO on your Helpdesk account and copy the <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >SSO shared secret</a> above.</div></div>';
 		}
 
@@ -211,12 +249,24 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_sso_urls_callback() {
-			echo '<ul class="fd-content freshdesk_sso_settings" style="display: none;"><li><div class="info-title">'.__('Remote Login URL').'</div>';
+
+			// Remote Login URL
+			echo '<ul class="fd-content freshdesk_sso_settings"><li><div class="info-title">'.__('Remote Login URL').'</div>';
 			echo '<input class="fd-code" value="' . wp_login_url() . '?action=freshdesk-login" type="button"/>';
 			echo '<div class="info-data freshdesk_helpdesk_url">'.__("Copy the above <i>Remote Login Url</i> to your").' <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >Single Sign On settings.</a></div></li>';
+
+			// Remote Logout URL
 			echo '<li><div class="info-title">'.__('Remote Logout URL').'</div>';
 			echo '<input class="fd-code" value="' . wp_login_url() . '?action=freshdesk-logout" type="button"/>';
-			echo '<div class="info-data freshdesk_helpdesk_url" id="freshdesk_redirect_url">'.__("Copy the above <i>Remote Logout Url</i> to your").' <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >Single Sign On settings.</a></div></li></ul>';
+			echo '<div class="info-data freshdesk_helpdesk_url" id="freshdesk_redirect_url">'.__("Copy the above <i>Remote Logout Url</i> to your").' <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >Single Sign On settings.</a></div></li>';
+
+			// Helpdesk URL
+			$this->freshdesk_helpdesk_url_callback();
+
+			// Portal URLs
+			echo '<li><div class="info-title">'.__('Portal URLs').'</div>';
+			echo "<input class='fd-code' id='freshdesk_cname' name='freshdesk_options[freshdesk_cname]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_cname']}' />";
+			echo '<div class="info-data freshdesk_helpdesk_url">Eg: https://support.yourdomain.com,https://support2.yourdomain.com</div></li></ul>';
 		}
 
 		/**
@@ -253,8 +303,10 @@ if(!class_exists('Fresh_Desk'))
 		* @return array
 		*/
 		public function validate_freshdesk_settings( $input ) {
+
 			$error = 0;
 			$url=trim($input['freshdesk_domain_url']);
+
 			if ( $url && ! preg_match( DOMAIN_REGEX, $url )  ) {
 				add_settings_error(
 					'freshdesk_domain_url', // setting title
@@ -283,42 +335,69 @@ if(!class_exists('Fresh_Desk'))
 			$sso_secret = $input['freshdesk_sso_key'];
 			$api_key = $input['freshdesk_api_key'];
 			$enable_sso = isset($input['freshdesk_enable_sso'] ) ? $this->validate_checkbox( $input['freshdesk_enable_sso'] ) : '';
+			$enable_comment_convertion = isset($input['freshdesk_enable_tickets'] ) ? $this->validate_checkbox( $input['freshdesk_enable_tickets'] ) : '';
 
-			if ( ! $url ) {
-				add_settings_error(
-					'freshdesk_domain_url', // setting title
-					'fd_domain_url_not_present', // error ID
-					'Helpdesk url cannot be blank', // error message
-					'error' // type of message
-				);
-				$error=1;
+			if ( $enable_sso == 'checked') {
+
+				if(!$sso_secret) {
+					// executes when SSO Shared Secret is empty
+					add_settings_error(
+						'freshdesk_sso_key', // setting title
+						'fd_sso_key_not_present', // error ID
+						'Please enter the sso secret to enable sso', // error message
+						'error' // type of message
+					);
+					$error=1;
+				} elseif (! $cname) {
+					// executes when Portal URLs is empty
+					add_settings_error(
+						'freshdesk_cname', // setting title
+						'fd_cname_invalid_domain', // error ID
+						'Portal URLs url cannot be blank', // error message
+						'error' // type of message
+					);
+					$error=1;
+				}
+				
 			}
 
-			if ( ! $api_key ) {
-				add_settings_error(
-					'freshdesk_api_key', // setting title
-					'fd_api_key_not_present', // error ID
-					'API key cannot be blank', // error message
-					'error' // type of message
-				);
-				$error=1;
+			if ( $enable_sso == 'checked' || $enable_comment_convertion == 'checked') {
+				if (! $url) {
+					// executes when Helpdesk URL is empty
+					add_settings_error(
+						'freshdesk_domain_url', // setting title
+						'fd_domain_url_not_present', // error ID
+						'Helpdesk url cannot be blank', // error message
+						'error' // type of message
+					);
+					$error=1;
+				}
 			}
 
-			if ( $enable_sso == 'checked' && ! $sso_secret ) {
-				add_settings_error(
-					'freshdesk_sso_key', // setting title
-					'fd_sso_key_not_present', // error ID
-					'Please enter the sso secret to enable sso', // error message
-					'error' // type of message
-				);
-				$error=1;
+			if ( $enable_comment_convertion == 'checked') {
+				if ( ! $api_key ) {
+					add_settings_error(
+						'freshdesk_api_key', // setting title
+						'fd_api_key_not_present', // error ID
+						'API key cannot be blank', // error message
+						'error' // type of message
+					);
+					$error=1;
+				}
 			}
 
 			if ( $error ) {
 				return $this->freshdesk_options;
 			}
 
-			$settings = array( 'freshdesk_domain_url' => $url, 'freshdesk_cname' => $cname, 'freshdesk_enable_sso' => $enable_sso, 'freshdesk_sso_key' => $sso_secret, 'freshdesk_api_key' => $api_key );
+			$settings = array(
+							'freshdesk_domain_url' => $url,
+							'freshdesk_cname' => $cname,
+							'freshdesk_enable_sso' => $enable_sso,
+							'freshdesk_sso_key' => $sso_secret,
+							'freshdesk_enable_tickets' => $enable_comment_convertion,
+							'freshdesk_api_key' => $api_key
+						);
 
 			return $settings;
 		}
@@ -329,7 +408,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return array
 		*/
 		public function validate_freshdesk_fb_settings( $input ) {
-		  $enable_feedback = isset($input['freshdesk_enable_feedback'] ) ? $this->validate_checkbox( $input['freshdesk_enable_feedback'] ) : '';
+			$enable_feedback = isset($input['freshdesk_enable_feedback'] ) ? $this->validate_checkbox( $input['freshdesk_enable_feedback'] ) : '';
 			$fb_widget_code = $input['freshdesk_fb_widget_code'];
 			$settings = array( 'freshdesk_fb_widget_code' => $fb_widget_code, 'freshdesk_enable_feedback' => $enable_feedback );
 			return $settings;
@@ -356,7 +435,9 @@ if(!class_exists('Fresh_Desk'))
 		public function freshdesk_comment_action( $actions, $comment ) {
 			if (current_user_can( 'administrator') ) {
 				if( (trim( get_comment_meta( $comment->comment_ID, "fd_ticket_id", true) ) == false ) ){
-					$actions['freshdesk'] = '<a class="fd_convert_ticket" href="#" domain_url='.$this->freshdesk_options['freshdesk_domain_url'].' id="' . $comment->comment_ID . '">' . __( 'Convert to Ticket', 'fd_ticket' ) . '</a>';
+
+					if($this->freshdesk_options['freshdesk_enable_tickets'] == 'checked')
+						$actions['freshdesk'] = '<a class="fd_convert_ticket" href="#" domain_url='.$this->freshdesk_options['freshdesk_domain_url'].' id="' . $comment->comment_ID . '">' . __( 'Convert to Ticket', 'fd_ticket' ) . '</a>';
 				}
 				else {
 					$actions['freshdesk'] = '<a class="fd_convert_ticket" href="#" title="hello" ticket_id="'.get_comment_meta($comment->comment_ID,"fd_ticket_id", true).'"domain_url='.$this->freshdesk_options['freshdesk_domain_url'].' id="' . $comment->comment_ID . '">' . __( 'View Ticket', 'fd_ticket_link' ) . '</a>';
@@ -453,8 +534,9 @@ if(!class_exists('Fresh_Desk'))
 		* Ajax Action handler. Freshdesk Ticket creation handled here.
 		* @return void
 		*/
-		public function fd_action_callback() {
-			$id = $_POST['commentId'];
+		public function fd_action_callback( $comment_ID, $comment_approved ) {
+
+			$id = $comment_ID;
 			$comment = get_comment($id);
 			$comment_link = get_comment_link( $comment, 'all' );
 			$email = $comment->comment_author_email;
@@ -477,11 +559,10 @@ if(!class_exists('Fresh_Desk'))
 				'id'=>'1',
 				'data'=> $result
 			);
+
 			if ( $result != -1 ) {
 				$resp = add_comment_meta( $id, 'fd_ticket_id', $result, false );
 			}
-			$xmlResponse = new WP_Ajax_Response( $response );
-			$xmlResponse->send();
 		}
 
 		/**

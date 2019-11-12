@@ -43,15 +43,25 @@ jQuery(document).ready(function($){
 		toggle_feedback_widget();
 	});
 
+	// conditions for 3rd option (convert wp comments to tickets)
+	if( $('#freshdesk_enable_tickets')[0] && $('#freshdesk_enable_tickets')[0].checked){
+	 	toggle_tickets();
+	}
+
+	$('#freshdesk_enable_tickets').on('click',function(){
+		toggle_tickets();
+	});
+	// conditions/events for 3rd option (convert wp comments to tickets) ends here
+
 	if( $('#freshdesk_enable_sso')[0] && $('#freshdesk_enable_sso')[0].checked){
 	 	toggle_sso();
 	}
 	$('#freshdesk_enable_sso').on('click',function(){
 		toggle_sso();
 	});
-	$('#freshdesk_domain_url').on('blur',function(){
-		toggle_url();
-	});
+	// $('#freshdesk_domain_url').on('blur',function(){
+	// 	toggle_url();
+	// });
 
 	function toggle_url(){
 		if($('#freshdesk_domain_url').val() != ''){
@@ -63,7 +73,7 @@ jQuery(document).ready(function($){
 			$('.freshdesk_widget_url').find('a').first().attr('href',url+'/admin/widget_config');
 			return;
 		}
-		$('.freshdesk_sso_settings').slideUp();
+		// $('.freshdesk_sso_settings').slideUp();
 	}
 
 	function toggle_feedback_widget(){
@@ -84,6 +94,16 @@ jQuery(document).ready(function($){
 		}
 		//$('#freshdesk_fb_widget_code').prop('disabled',true);
 		$('#freshdesk_sso_options').slideUp();
+	}
+
+	function toggle_tickets() {
+		if($('#freshdesk_enable_tickets')[0].checked){
+			$('#freshdesk_tickets_options').slideDown();
+			//$('#freshdesk_fb_widget_code').prop('disabled',false);
+			return;
+		}
+		//$('#freshdesk_fb_widget_code').prop('disabled',true);
+		$('#freshdesk_tickets_options').slideUp();
 	}
 
 });
