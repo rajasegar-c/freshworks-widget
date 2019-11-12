@@ -137,7 +137,7 @@ if(!class_exists('Fresh_Desk'))
 						<form class="form-table" method="post" action="options.php">';
 			echo settings_fields('freshdesk_options_group'); //setting fields group
 			echo do_settings_sections('freshdesk-menu-handle');
-			echo '<p class="submit"><input class="wp-core-ui button-primary" name="Submit" type="submit" value="Save Changes" /></p>
+			echo '<p class="submit"><input class="wp-core-ui button-primary" name="Submit" type="submit" value="Save changes" /></p>
 						</form>
 					</div>';
 		}
@@ -168,7 +168,7 @@ if(!class_exists('Fresh_Desk'))
 		*/
 		public function freshdesk_domain_callback() {
 			echo "<input class='fd_ui_element' id='freshdesk_domain_url' name='freshdesk_options[freshdesk_domain_url]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_domain_url']}' />";
-			echo '<div class="info-data fd_ui_element">Eg: https://yourcompany.freshdesk.com</div>';
+			echo '<div class="info-data fd_ui_element">E.g.: https://yourcompany.freshdesk.com</div>';
 		}
 
 		/**
@@ -185,7 +185,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_enable_sso_callback() {
-			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_sso]" id="freshdesk_enable_sso" '.$this->freshdesk_options["freshdesk_enable_sso"].' /><span class="fd_ui_element fd-bold">Enable SSO Login </span></label><div><div class="info-data fd_lmargin">Enabling this will let your users to login using their wordpress credentials</div></li>';
+			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_sso]" id="freshdesk_enable_sso" '.$this->freshdesk_options["freshdesk_enable_sso"].' /><span class="fd_ui_element fd-bold">Enable SSO</span></label><div><div class="info-data fd_lmargin">Single sign on lets your WordPress users login seamlessly into your Freshdesk account without an additional username and password</div></li>';
 			
 			//SSO Secret
 			echo '<div id="freshdesk_sso_options" style="display: none;padding-left:45px">';
@@ -226,7 +226,7 @@ if(!class_exists('Fresh_Desk'))
 		}
 
 		/**
-		* Function Name: freshdesk_sso_callback
+		* Function Name: freshdesk_tickets_callback
 		* @return void
 		*/
 		public function freshdesk_tickets_callback() {
@@ -275,7 +275,7 @@ if(!class_exists('Fresh_Desk'))
 		*/
 		public function freshdesk_api_callback() {
 			echo "<input class='fd_ui_element' type='text' name='freshdesk_options[freshdesk_api_key]' size='72' value='{$this->freshdesk_options['freshdesk_api_key']}' />";
-			echo '<div class="info-data fd_ui_element">'.__("Your Helpdesk's Apikey will be available under Agent profile settings.").'</div>';
+			echo '<div class="info-data fd_ui_element">'.__("Your API key can be found in your profile settings. <a href='https://support.freshdesk.com/support/solutions/articles/215517-how-to-find-your-api-key' target='_blank'>Learn more.</a>").'</div>';
 		}
 
 		/**
@@ -283,7 +283,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_enable_fb_callback() {
-			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_feedback_options[freshdesk_enable_feedback]" id="freshdesk_enable_feedback" '.$this->freshdesk_feedback_options["freshdesk_enable_feedback"].' /><span class="fd_ui_element fd-bold">Show FeedBack Widget </span></label><div><div class="info-data fd_lmargin">This widget will be shown on your wordpress site for Visitors to post feedback</div></li>';
+			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_feedback_options[freshdesk_enable_feedback]" id="freshdesk_enable_feedback" '.$this->freshdesk_feedback_options["freshdesk_enable_feedback"].' /><span class="fd_ui_element fd-bold">Show help widget on this WordPress site</span></label><div><div class="info-data fd_lmargin">This widget will appear on all pages in your WordPress site, so you customers can reach out to you for help.</div></li>';
 			$this->freshdesk_fb_widget_callback();
 		}
 
@@ -292,7 +292,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_fb_widget_callback() {			
-			echo '<li><div id="freshdesk_feedback_widget_id" style="display: none;"><div class="info-data  fd_text fd_ui_element freshdesk_widget_url"><a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/widget_config" target="_blank">Copy feedback widget code</a> from your helpdesk and paste it below.</div>';
+			echo '<li><div id="freshdesk_feedback_widget_id" style="display: none;"><div class="info-data  fd_text fd_ui_element freshdesk_widget_url"><a href="{$this->freshdesk_options["freshdesk_domain_url"]}/a/admin/widgets" target="_blank">Copy help widget code</a> from your account and paste it below.</div>';
 			echo '<textarea class="fd_ui_element fd_text" name="freshdesk_feedback_options[freshdesk_fb_widget_code]" id="freshdesk_fb_widget_code" rows="7">'.$this->freshdesk_feedback_options["freshdesk_fb_widget_code"].'</textarea></div></li></ul></td></tr>';
 		}
 
@@ -311,7 +311,7 @@ if(!class_exists('Fresh_Desk'))
 				add_settings_error(
 					'freshdesk_domain_url', // setting title
 					'fd_invalid_domain', // error ID
-					"$url is an invalid  Helpdesk url", // error message
+					"$url doesn't seem right. Can you please check it once and try again? :)", // error message
 					'error' // type of message
 				);
 				$error=1;
@@ -323,7 +323,7 @@ if(!class_exists('Fresh_Desk'))
 					add_settings_error(
 						'freshdesk_cname', // setting title
 						'fd_cname_invalid_domain', // error ID
-						"$cname is an invalid  domain url", // error message
+						"$cname doesn't seem right. Can you please check it once and try again? :)", // error message
 						'error' // type of message
 					);
 					$error=1;
