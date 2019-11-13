@@ -203,7 +203,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_convert_tickets_callback() {
-			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_tickets]" id="freshdesk_enable_tickets" '.(isset($this->freshdesk_options["freshdesk_enable_tickets"]) ? $this->freshdesk_options["freshdesk_enable_tickets"] : '').' /><span class="fd_ui_element fd-bold">Convert WordPress comments to tickets in Freshdesk </span></label><div><div class="info-data fd_lmargin">Enabling this will let your users to convert wordpress comments to freshdesk tickets</div></li>';
+			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_tickets]" id="freshdesk_enable_tickets" '.(isset($this->freshdesk_options["freshdesk_enable_tickets"]) ? $this->freshdesk_options["freshdesk_enable_tickets"] : '').' /><span class="fd_ui_element fd-bold">Convert WordPress comments to tickets in Freshdesk </span></label><div><div class="info-data fd_lmargin">When this is checked, every comment on WordPress will get created as a ticket in Freshdesk.</div></li>';
 			//API Key
 			echo '<div id="freshdesk_tickets_options" style="display: none;padding-left:45px">';
 			$this->freshdesk_tickets_callback();
