@@ -63,13 +63,18 @@ jQuery(document).ready(function($){
 	// 	toggle_url();
 	// });
 
+	// select double click to select all - Remote Login URL / Remote Logout URL
+	$('.remote-url').on('dblclick', function() {
+		$(this).select();
+	});
+
 	function toggle_url(){
 		if($('#freshdesk_domain_url').val() != ''){
 			$('.freshdesk_sso_settings').slideDown();
 			url = $('#freshdesk_domain_url').val();
-			$('.freshdesk_helpdesk_url').find('a').each(function(){
-				$(this).attr('href',url+'/admin/security');
-			});
+			// $('.freshdesk_helpdesk_url').find('a').each(function(){
+			// 	$(this).attr('href',url+'/admin/security');
+			// });
 			$('.freshdesk_widget_url').find('a').first().attr('href',url+'/admin/widget_config');
 			return;
 		}

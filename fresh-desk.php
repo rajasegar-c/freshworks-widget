@@ -242,7 +242,7 @@ if(!class_exists('Fresh_Desk'))
 		*/
 		public function freshdesk_sso_callback() {
 			echo "<div class='freshdesk_sso_settings'><div class='info-title'>".__("Simple SSO shared secret")."</div><input class='fd_ui_element' id='freshdesk_sso_key' name='freshdesk_options[freshdesk_sso_key]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_sso_key']}' />";
-			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">Enable SSO in your Freshdesk account, copy the <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >SSO shared secret from this page</a> and paste it here.</div></div>';
+			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">Enable SSO in your Freshdesk account, copy the <a href="'.$this->freshdesk_options["freshdesk_domain_url"].'/admin/security" target="_blank" >SSO shared secret from this page</a> and paste it here.</div></div>';
 		}
 
 		/**
@@ -253,13 +253,13 @@ if(!class_exists('Fresh_Desk'))
 
 			// Remote Login URL
 			echo '<ul class="fd-content freshdesk_sso_settings"><li><div class="info-title">'.__('Remote Login URL').'</div>';
-			echo '<input class="fd-code" value="' . wp_login_url() . '?action=freshdesk-login" type="button"/>';
-			echo '<div class="info-data freshdesk_helpdesk_url">'.__("Copy the above <i>remote login URL</i> to your").' <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >Freshdesk simple SSO settings.</a></div></li>';
+			echo '<input class="fd-code remote-url" value="' . wp_login_url() . '?action=freshdesk-login" type="text" size="72" readonly/>';
+			echo '<div class="info-data freshdesk_helpdesk_url">'.__("Copy the above <i>remote login URL</i> to your").' <a href="'.$this->freshdesk_options["freshdesk_domain_url"].'/admin/security" target="_blank" >Freshdesk simple SSO settings.</a></div></li>';
 
 			// Remote Logout URL
 			echo '<li><div class="info-title">'.__('Remote Logout URL').'</div>';
-			echo '<input class="fd-code" value="' . wp_login_url() . '?action=freshdesk-logout" type="button"/>';
-			echo '<div class="info-data freshdesk_helpdesk_url" id="freshdesk_redirect_url">'.__("Copy the above <i>remote logout URL</i> to your").' <a href="{$this->freshdesk_options["freshdesk_domain_url"]}/admin/security" target="_blank" >Freshdesk simple SSO settings.</a></div></li>';
+			echo '<input class="fd-code remote-url" value="' . wp_login_url() . '?action=freshdesk-logout" type="text" size="72" readonly/>';
+			echo '<div class="info-data freshdesk_helpdesk_url" id="freshdesk_redirect_url">'.__("Copy the above <i>remote logout URL</i> to your").' <a href="'.$this->freshdesk_options["freshdesk_domain_url"].'/admin/security" target="_blank" >Freshdesk simple SSO settings.</a></div></li>';
 
 			// Helpdesk URL
 			$this->freshdesk_helpdesk_url_callback();
@@ -293,7 +293,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_fb_widget_callback() {			
-			echo '<li><div id="freshdesk_feedback_widget_id" style="display: none;"><div class="info-data  fd_text fd_ui_element freshdesk_widget_url"><a href="{$this->freshdesk_options["freshdesk_domain_url"]}/a/admin/widgets" target="_blank">Copy the embed code</a> from your account and paste it below.</div>';
+			echo '<li><div id="freshdesk_feedback_widget_id" style="display: none;"><div class="info-data  fd_text fd_ui_element freshdesk_widget_url"><a href="'.$this->freshdesk_options["freshdesk_domain_url"].'/a/admin/widgets" target="_blank">Copy the embed code</a> from your account and paste it below.</div>';
 			echo '<textarea class="fd_ui_element fd_text" name="freshdesk_feedback_options[freshdesk_fb_widget_code]" id="freshdesk_fb_widget_code" rows="7">'.$this->freshdesk_feedback_options["freshdesk_fb_widget_code"].'</textarea></div></li></ul></td></tr>';
 		}
 
