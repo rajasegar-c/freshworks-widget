@@ -354,7 +354,7 @@ if(!class_exists('Fresh_Desk'))
 					add_settings_error(
 						'freshdesk_cname', // setting title
 						'fd_cname_invalid_domain', // error ID
-						'Portal URLs url cannot be blank', // error message
+						'Please enter portal URLs', // error message
 						'error' // type of message
 					);
 					$error=1;
