@@ -123,7 +123,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_plugin_menu() {
-			add_menu_page( 'Freshdesk Settings', 'Freshdesk', 'manage_options', 'freshdesk-menu-handle', array($this, 'freshdesk_settings_page'));
+			add_menu_page( 'Freshdesk settings', 'Freshdesk', 'manage_options', 'freshdesk-menu-handle', array($this, 'freshdesk_settings_page'));
 			add_action( 'admin_init', array($this, 'freshdesk_settings_init'));
 		}
 
@@ -134,7 +134,7 @@ if(!class_exists('Fresh_Desk'))
 		public function freshdesk_settings_page() {
 
 			echo '<div class="wrap">
-						<h2>'. __("Freshdesk Settings") .'</h2>
+						<h2>'. __("Freshdesk settings") .'</h2>
 						<form class="form-table" method="post" action="options.php">';
 			echo settings_fields('freshdesk_options_group'); //setting fields group
 			echo do_settings_sections('freshdesk-menu-handle');
@@ -203,7 +203,7 @@ if(!class_exists('Fresh_Desk'))
 		* @return void
 		*/
 		public function freshdesk_convert_tickets_callback() {
-			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_tickets]" id="freshdesk_enable_tickets" '.(isset($this->freshdesk_options["freshdesk_enable_tickets"]) ? $this->freshdesk_options["freshdesk_enable_tickets"] : '').' /><span class="fd_ui_element fd-bold">Convert WP Comments to FreshDesk Tickets </span></label><div><div class="info-data fd_lmargin">Enabling this will let your users to convert wordpress comments to freshdesk tickets</div></li>';
+			echo '<tr><td colspan="2"><ul class="fd-form-table"><li><div><label><input class="fd_button" type="checkbox" name="freshdesk_options[freshdesk_enable_tickets]" id="freshdesk_enable_tickets" '.(isset($this->freshdesk_options["freshdesk_enable_tickets"]) ? $this->freshdesk_options["freshdesk_enable_tickets"] : '').' /><span class="fd_ui_element fd-bold">Convert WordPress comments to tickets in Freshdesk </span></label><div><div class="info-data fd_lmargin">Enabling this will let your users to convert wordpress comments to freshdesk tickets</div></li>';
 			//API Key
 			echo '<div id="freshdesk_tickets_options" style="display: none;padding-left:45px">';
 			$this->freshdesk_tickets_callback();
@@ -233,7 +233,7 @@ if(!class_exists('Fresh_Desk'))
 		public function freshdesk_tickets_callback() {
 			echo "<div class='freshdesk_sso_settings'><div class='info-title'>".__("API key")."</div><input class='fd_ui_element' id='freshdesk_api_key' name='freshdesk_options[freshdesk_api_key]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_api_key']}' />";
 			
-			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">'.__("Your Helpdesk's Apikey will be available under Agent profile settings.").'</div>';
+			echo '<div class="info-data fd_ui_element freshdesk_helpdesk_url">'.__("Your API key can be found in your profile settings. <a href='https://support.freshdesk.com/support/solutions/articles/215517-how-to-find-your-api-key' target='_blank'>Learn more.</a>").'</div>';
 		}
 
 		/**
@@ -267,7 +267,7 @@ if(!class_exists('Fresh_Desk'))
 			// Portal URLs
 			echo '<li><div class="info-title">'.__('Portal URLs').'</div>';
 			echo "<input class='fd-code' id='freshdesk_cname' name='freshdesk_options[freshdesk_cname]' size='72' type='text' value='{$this->freshdesk_options['freshdesk_cname']}' />";
-			echo '<div class="info-data freshdesk_helpdesk_url">Eg: https://support.yourdomain.com,https://support2.yourdomain.com</div></li></ul>';
+			echo '<div class="info-data freshdesk_helpdesk_url">List all the URLs of portals you\'ve set up in your account. Eg: https://support.yourdomain.com, https://support2.yourdomain.com</div></li></ul>';
 		}
 
 		/**
