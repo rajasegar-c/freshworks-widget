@@ -1,7 +1,7 @@
-=== Freshdesk Official===
-Contributors: hjohnpaul, sathishfreshdesk, balakumars, shreyasns
+=== Freshdesk (official)===
+Contributors: freshdeskintegration
 Donate link: 
-Tags: freshdesk, helpdesk, support tool
+Tags: freshdesk, helpdesk, contact form, knowledge base, customer support software, 
 Requires at least: 3.4
 Tested up to: 5.2.2
 Stable tag: 1.8.4
@@ -9,63 +9,64 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
-Freshdesk Official plugin is a seamless way to add your helpdesk account to your website. Supports various useful functions.
+Freshdesk (official) lets you integrate the help widget into your website, convert WordPress comments into tickets and also makes it easy for your WordPress users to login to your support portal.
 
-==Description==
+== Description ==
 
-Freshdesk Official plugin enables users to achieve three important functions:
+With the Freshdesk (official) plugin, you can now:
 
-- Avoid additional login to helpdesk if the user has already logged in to WP(Single Sign On).
-- Effortlessly integrate the helpdesk' s feedback widget along with solutions search to his wordpress site.
-- Allows the site admin to convert comments into helpdesk tickets.
-- Adding the comment link to ticket description.
+* quickly integrate the help widget in your WordPress site or blog
+* convert comments on your WordPress site into Freshdesk tickets
+* allow users on WordPress to seamlessly login to your support portal via SSO
 
-1. Single Sign On:
-Users can now login to their helpdesk(freshdesk) support portal using Wordpress authentication. The single sign on feature ensures that users who have already logged into their Wordpress site can start working in their Freshdesk support portal as well without having to log in separately. 
-
-2. Feedback Pop-up Widget:
-The plugin allows Wordpress users to have a Freshdesk feedback widget embedded in their wordpress site. The widget allows people visiting the site to provide feedback and search for answers.
-
-3. Convert Comments to Tickets on helpdesk:
-Users with admin access to their Wordpress sites can convert comments into “Tickets”. The marked comments are sent to the user’s support portal that can be solved or responded to later.
-
-4. Adding the comment link-back in the ticket added:
-   Comments converted to tickets in freshdesk will now have the link-back url to the actual comment in the wordpress site appended in its description.
 
 == Installation ==
+
 * For an automatic installation through WordPress
-1. Go to the 'Add New' plugins screen in your WordPress admin area.
-2. Search for 'Freshdesk Official' plugin.
-3. Click 'Install Now' and activate the plugin.
+
+1. Go to the Plugins page in your WordPress admin section.
+2. Click the 'Add new' button.
+3. Search for the 'Freshdesk (official)' plugin.
+4. Click 'Install now' and activate the plugin.
 
 
-Manual Installation:
+== Manual installation ==
 
-1. Download the latest version of 'Freshdesk Official'  plugin from the WordPress Plugin Directory.
-2. Extract the zip and Upload the freshdesk_support directory to your /wp-content/plugins directory
-3. Go to the plugins management page and activate the plugin
-4. You now have a new admin menu 'Freshdesk Official' in your WordPress admin menu bar. Click on it and Configure your settings as mentioned in the info comments in the screen.
+1. Download the latest version of 'Freshdesk (official)'  plugin from the WordPress plugin directory.
+2. Extract the zip and upload the wp-freshworks-widget directory to your /wp-content/plugins directory.
+3. Go to the 'Plugins' page in your admin section and activate the plugin.
+4. You now have a new admin menu 'Freshdesk' in your WordPress admin menu bar. Click on it and configure settings.
 
-== Frequently Asked Questions ==
-1. Where do i find sso shared secret ?
 
-  SSO shared secret will be available in your helpdesk account's admin -> security -> sso section.
+== Frequently asked questions ==
 
-2. How can login to my helpdesk using normal login screen after enabling sso ?
+= 1. What is the help widget? =
 
-  You can always access your help desk's normal login screen using http://yourcompany.freshdesk.com/login/normal link.
+The help widget allows you to embed a contact form or help articles in your website. To use the help widget, you need to create a Freshdesk account by [signing up here](https://freshdesk.com/signup?utm_source=wordpressplugin&utm_medium=pluginreadme). 
 
-3. Where can I find the feedback widget code snippet ?
+= 2. Where can I find the help widget code? = 
 
-  Feedback widget code has to be copied from the admin -> feedback section. You can configure the alignment and kbase search hide and much more here and copy the generate code snippet.
+Once you've logged in to your Freshdesk account, you can go to **Admin** > **Widgets** and create a new widget. You can click the 'Embed code' tab to copy the code from your Freshdesk account.
 
-== Screenshots ==
-1. This screen shot shows the Settings Screen.
-2. This shows the comments page where a new action('Convert to ticket') added to make the comment as a ticket.
-3. This shows the comments page with 'View Ticket' option showing if the comment is already converted to ticket.
-4. This shows the comment link in the ticket description.
+You can then paste it in the plugin settings page in WordPress. This will make the widget appear on all pages in your WordPress account.
+
+= 3. Where do I find the SSO shared secret key? = 
+
+  The SSO shared secret will be available in your Freshdesk account's **Admin** -> **Security** page.
+
+
+== Screenshots == 
+
+1. The Freshdesk help widget
+2. Freshdesk (official) plugin's settings page in WordPress
+
 
 == Changelog ==
+= 2.0 =
+  Updated code to match WordPress latest coding standards.
+  Reorganized the settings page.
+  Updated content in the settings page to make things easier to understand.
+  And we're back! :)
 = 1.8.4 =
   minor sso bug fix.
 = 1.8.3 =
@@ -98,6 +99,7 @@ Bug Fix:
  - Sign-out from freshdesk does not logout wordpress session.
 = 1.0 =
 First Release Version.
+
 
 == Upgrade Notice ==
 = 1.8.4 =
