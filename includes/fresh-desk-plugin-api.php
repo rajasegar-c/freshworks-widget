@@ -20,16 +20,16 @@ class Fresh_Desk_Plugin_Api{
 	}	
 
 	/**
-	* Function Name: create_ticket
+	* Function Name: fdo_create_ticket
 	* @param $email, $subject, $description
 	* @return int
 	*/
-	function create_ticket($email,$subject,$description){
+	function fdo_create_ticket($email,$subject,$description){
 		$datafields =  array (
      									"helpdesk_ticket" =>array("subject"=>$subject,"description_html"=>$description,"email"=>$email)
      								);
  		$jsondata= json_encode($datafields);
- 		$this->make_request($this->domain_url."/helpdesk/tickets.json",$jsondata);
+ 		$this->fdo_make_request($this->domain_url."/helpdesk/tickets.json",$jsondata);
  		if($this->response_status!= 200 || empty( $this->response )){
  			return -1;
  		}
@@ -37,39 +37,33 @@ class Fresh_Desk_Plugin_Api{
 	}
 
 	/**
-	* Function Name: make_request
+	* Function Name: fdo_make_request
 	* @param $requestUri, $payload
 	* @return void
 	*/
-	private function make_request($requestUri,$payload){
-		$ch = curl_init ($requestUri);
- 		$header[] = "Content-type: application/json";
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,$payload);
-		$user_pwd = $this->auth_method();
-		// echo "value:".$user_pwd."##";
-		curl_setopt($ch, CURLOPT_USERPWD,$user_pwd);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-		curl_setopt($ch, CURLOPT_HEADER, false);
-		// receive server response ...
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		$server_output = curl_exec ($ch);
+	private function fdo_make_request($requestUri,$payload){
 
-		$fd_response = json_decode($server_output);
+		$user_pwd = $this->fdo_auth_method();
 
-		$this->response_status = curl_getinfo($ch,CURLINFO_HTTP_CODE);
-		$this->response = isset($fd_response->{'helpdesk_ticket'}->{'display_id'}) ? $fd_response->{'helpdesk_ticket'}->{'display_id'} : '';
-		curl_close ($ch);
+		$args = [
+			    'headers' => [
+			        'Authorization' => "Basic ".base64_encode($user_pwd),
+			        "Content-type" => "application/json",
+			    ],
+			    'body'    => $payload,
+			];
+		$response = wp_remote_post( $requestUri, $args );
+		$response_body = json_decode(wp_remote_retrieve_body( $response ));
+
+		$this->response_status = $response['response']['code'];
+		$this->response = isset($response_body->{'helpdesk_ticket'}->{'display_id'}) ? $response_body->{'helpdesk_ticket'}->{'display_id'} : '';
 	}
 
 	/**
-	* Function Name: auth_method
+	* Function Name: fdo_auth_method
 	* @return string
 	*/
-	private function auth_method(){
+	private function fdo_auth_method(){
 		return $this->apikey.":X";
 	}
 
