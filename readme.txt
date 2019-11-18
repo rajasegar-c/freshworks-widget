@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
-Freshdesk (official) lets you integrate the help widget into your website, convert WordPress comments into tickets and also makes it easy for your WordPress users to login to your support portal.
+Quickly embed the Freshdesk help widget, convert WordPress comments to tickets and seamlessly log your WordPress users in to your suppport portal.
 
 == Description ==
 
