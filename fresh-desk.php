@@ -2,8 +2,8 @@
 /**
   Plugin Name: Freshdesk Official
   Plugin URI:
-  Description: Freshdesk (official) lets you integrate the help widget into your website, convert WordPress comments into tickets and also makes it easy for your WordPress users to login to your support portal.
-  Author: hjohnpaul,sathishfreshdesk,balakumars,shreyasns
+  Description: Quickly embed the Freshdesk help widget, convert WordPress comments to tickets and seamlessly log your WordPress users in to your suppport portal.
+  Author: Freshworks
   Version: 2.0
   Author URI: http://freshdesk.com/
 */
