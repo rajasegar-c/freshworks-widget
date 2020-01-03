@@ -59,7 +59,7 @@ jQuery(document).ready(function($){
 	$('#freshdesk_enable_sso').on('click',function(){
 		toggle_sso();
 	});
-	// $('#freshdesk_domain_url').on('blur',function(){
+	// $('.freshdesk_domain_url').on('blur',function(){
 	// 	toggle_url();
 	// });
 
@@ -68,10 +68,14 @@ jQuery(document).ready(function($){
 		$(this).select();
 	});
 
+	$('.freshdesk_domain_url').on('keyup', function() {
+		$('.freshdesk_domain_url').val($(this).val());
+	});
+
 	function toggle_url(){
-		if($('#freshdesk_domain_url').val() != ''){
+		if($('.freshdesk_domain_url').val() != ''){
 			$('.freshdesk_sso_settings').slideDown();
-			url = $('#freshdesk_domain_url').val();
+			url = $('.freshdesk_domain_url').val();
 			// $('.freshdesk_helpdesk_url').find('a').each(function(){
 			// 	$(this).attr('href',url+'/admin/security');
 			// });

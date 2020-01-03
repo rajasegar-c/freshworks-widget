@@ -4,7 +4,7 @@ Donate link:
 Tags: freshdesk, helpdesk, contact form, knowledge base, customer support software, 
 Requires at least: 3.4
 Tested up to: 5.3
-Stable tag: 2
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,8 @@ You can then paste it in the plugin settings page in WordPress. This will make 
 
 
 == Changelog ==
+= 2.1 =
+  Freshdesk URL fields are made to be synce with each other.
 = 2.0 =
   Updated code to match WordPress latest coding standards.
   Reorganized the settings page.

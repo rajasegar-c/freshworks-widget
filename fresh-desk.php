@@ -4,7 +4,7 @@
   Plugin URI:
   Description: Quickly embed the Freshdesk help widget, convert WordPress comments to tickets and seamlessly log your WordPress users in to your suppport portal.
   Author: Freshworks
-  Version: 2.0
+  Version: 2.1
   Author URI: http://freshdesk.com/
 */
 
@@ -203,7 +203,7 @@ if(!class_exists('Fresh_Desk_Official'))
 		*/
 		public function fdo_helpdesk_url_callback() {
 			echo '<li><div class="info-title">'.__('Freshdesk URL').'</div>';
-			echo "<input class='fd-code' id='freshdesk_domain_url' name='freshdesk_options[freshdesk_domain_url]' size='72' type='text' value='".esc_attr($this->freshdesk_options['freshdesk_domain_url'])."' />";
+			echo "<input class='fd-code freshdesk_domain_url' name='freshdesk_options[freshdesk_domain_url]' size='72' type='text' value='".esc_attr($this->freshdesk_options['freshdesk_domain_url'])."' />";
 			echo '<div class="info-data freshdesk_helpdesk_url">E.g.: https://yourcompany.freshdesk.com</div></li></ul>';
 		}
 
@@ -465,7 +465,7 @@ if(!class_exists('Fresh_Desk_Official'))
 				}
 			}
 
-			if ( $pagenow == 'edit-comments.php' ||  ( sanitize_text_field($_GET['page']) != null && sanitize_text_field($_GET['page']) == 'freshdesk-menu-handle' ) ) {
+			if ( $pagenow == 'edit-comments.php' ||  ( !empty($_GET['page']) && sanitize_text_field($_GET['page']) != null && sanitize_text_field($_GET['page']) == 'freshdesk-menu-handle' ) ) {
 				if ( current_user_can( 'manage_options' ) ) {
 					wp_enqueue_script( 'fd_plugin_js', FDO_PLUGIN_URL . 'public/js/freshdesk_plugin_js.js', array( 'jquery' ) );
 					wp_localize_script( 'fd_plugin_js', 'freshdeskAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
@@ -553,7 +553,7 @@ if(!class_exists('Fresh_Desk_Official'))
 		*/
 		public function fdo_admin_msgs() {
 
-			if ( empty(sanitize_text_field( $_GET['page'] )) ){
+			if (empty($_GET['page']) ){
 				return;
 			}
 			// check for our settings page - need this in conditional further down
